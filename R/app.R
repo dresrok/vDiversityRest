@@ -6,7 +6,7 @@ getIvi <- function(url){
   forest$Species <- as.character(forest$Species);
   forest$relDen <- (forest$absDen/sum(forest$absDen))*100;
   speciesFreq <- data.frame(table(data$subparcela, data$especie));
-  names(speciesFreq) <- c('subparcela', 'Species', 'absFreq');
+  names(speciesFreq) <- c('quadrant', 'Species', 'absFreq');
   dtFreq <- data.frame(table(speciesFreq$Species[speciesFreq$absFreq > 0]));
   forest$absFreq <- dtFreq$Freq;
   forest$relFreq <- (forest$absFreq/sum(forest$absFreq))*100;
