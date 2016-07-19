@@ -1,0 +1,9 @@
+Package: vDiversityRest
+Type: Package
+Title: Evaluate Diversity, Richness and Structure in Tropical Forests
+Version: 0.6.0
+Author: Andrés Felipe Santos Lozano
+Maintainer: Andrés Felipe Santos Lozano <andresfesantos@gmail.com>
+Description: This tool calculate the Importance Value Index (IVI), Margalef, Menhinick, Shannon-Wiener, Simpson and Berger Parker. Also measures beta diversity between ecosystems.
+License: BSD license
+LazyData: TRUE
