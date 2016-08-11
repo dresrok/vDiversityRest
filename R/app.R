@@ -43,3 +43,83 @@ getAlphadiversity <- function(url){
   index$BergerParker <- max(forest$absDen) / n;
   return(index);
 }
+
+getBetadiversity <- function(urlEcosystemA, urlEcosystemB){
+  library(jsonlite);
+  ecosystemA <- fromJSON(urlEcosystemA);
+  ecosystemB <- fromJSON(urlEcosystemB);
+  speciesA <- unique(ecosystemA$especie);
+  speciesB <- unique(ecosystemB$especie);
+
+  AB <- intersect(tolower(speciesA), tolower(speciesB));
+
+  a <- length(unique(ecosystemA$especie));
+  b <- length(unique(ecosystemB$especie));
+  j <- length(AB);
+
+  index <- NULL;
+  index$JaccardCj <- j/(a+b-j);
+  index$SorensenCs <- 2*j/(a+b);
+
+  aN <- nrow(ecosystemA);
+  bN <- nrow(ecosystemB);
+
+  match <- integer(0);
+  ani <- integer(0);
+  bni <- integer(0);
+  ani_bni <- integer(0);
+  Xij_Xik <- integer(0);
+  maxS <- integer(0);
+
+  for(i in 1:length(AB)){
+    sA <- subset(ecosystemA, tolower(especie) == AB[i]);
+    sB <- subset(ecosystemB, tolower(especie) == AB[i]);
+
+    if(nrow(sA) < nrow(sB)){
+      match[i] <- nrow(sA);
+      maxS[i] <- nrow(sB);
+    } else{
+      match[i] <- nrow(sB);
+      maxS[i] <- nrow(sA);
+    }
+    ani_bni[i] <- nrow(sA)*nrow(sB);
+    Xij_Xik[i] <- ( nrow(sA) - nrow(sB) )^2
+  }
+
+  jN <- sum(match);
+
+  index$SorensenCn <- 2*jN/(aN + bN);
+  S_ani_bni <- sum(ani_bni);
+
+  freqSpeciesA <- as.data.frame(table(ecosystemA$especie));
+  freqSpeciesB <- as.data.frame(table(ecosystemB$especie));
+
+  ani <- sum(freqSpeciesA$Freq^2);
+  bni <- sum(freqSpeciesB$Freq^2);
+
+  da <- ani / (aN^2);
+  db <- bni / (bN^2);
+
+  index$MorisitaHornCmH <- (2*S_ani_bni) / ((da+db)*(aN*bN));
+
+  tmpXij <- subset(ecosystemA, !( tolower(especie) %in% AB ) );
+  Xij <- as.data.frame(table(factor(tmpXij$especie)));
+  tmpXik <- subset(ecosystemB, !( tolower(especie) %in% AB ) );
+  Xik <- as.data.frame(table(factor(tmpXik$especie)));
+
+  S_Xij_Xik <- sum(Xij$Freq^2) + sum(Xik$Freq^2) + sum(Xij_Xik);
+
+  index$DJK <- sqrt(S_Xij_Xik);
+  n <- (a+b)-j;
+  index$djk <- sqrt( (index$DJK)^2 / n );
+
+  PS <- 200 * ( jN / (nrow(ecosystemA) + nrow(ecosystemB)) );
+
+  index$PD <- 100 - PS;
+
+  RI <- 100 * ( jN / (sum(Xij$Freq) + sum(Xik$Freq) + sum(maxS)) );
+
+  index$PR <- 100 - RI;
+
+  return(index)
+}
