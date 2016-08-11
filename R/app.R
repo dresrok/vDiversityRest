@@ -5,12 +5,11 @@ getIvi <- function(url){
   names(forest) <- c('Species', 'absDen');
   forest$Species <- as.character(forest$Species);
   forest$relDen <- (forest$absDen/sum(forest$absDen))*100;
-  speciesFreq <- data.frame(table(data$subparcela, data$especie));
-  names(speciesFreq) <- c('quadrant', 'Species', 'absFreq');
+  speciesFreq <- data.frame(table(data$transecto, data$subparcela, data$especie));
+  names(speciesFreq) <- c('transect', 'quadrant', 'Species', 'absFreq');
   dtFreq <- data.frame(table(speciesFreq$Species[speciesFreq$absFreq > 0]));
   forest$absFreq <- dtFreq$Freq;
   forest$relFreq <- (forest$absFreq/sum(forest$absFreq))*100;
-  data$dap <- as.double(gsub(",", ".", gsub("\\.", "", data$dap)));
   data$dap[is.na(data$dap)] <- 0;
   data$dA <- (pi/40000) * (data$dap^2);
   dtDbh <- data.frame(tapply(data$dA, data$especie, sum), row.names=NULL);
