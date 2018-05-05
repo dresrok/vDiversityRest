@@ -1,4 +1,4 @@
-## Función para calcular el IVI
+# Calcular ivi
 getIvi <- function(url){
   library(jsonlite);
   data <- fromJSON(url);
@@ -26,7 +26,7 @@ getIvi <- function(url){
   forest <- rbind(forest, total);
   return(forest);
 }
-## Función para calcular alfadiversidad
+# Calcular alfadiversidad
 getAlphadiversity <- function(url){
   library(jsonlite);
   data <- fromJSON(url);
@@ -44,7 +44,7 @@ getAlphadiversity <- function(url){
   index$BergerParker <- max(forest$absDen) / n;
   return(index);
 }
-## Función para calcular betadiversidad
+# Calcular betadiversidad
 getBetadiversity <- function(urlEcosystemA, urlEcosystemB){
   library(jsonlite);
   ecosystemA <- fromJSON(urlEcosystemA);
